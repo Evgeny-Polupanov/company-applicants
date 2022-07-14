@@ -1,26 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useQuery } from '@apollo/client';
+import { GET_COMPANY_POSITIONS } from './graphql/queries';
+import { ListEntity } from './types';
 
-function App() {
+const App = () => {
+  const { loading, error, data } = useQuery(GET_COMPANY_POSITIONS, { variables: { name: 'employee'}});
+  console.log(data);
+
+  if (loading || error) {
+    return null;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ul>
+      {data.applicantIndividualCompanyPositions.data.map((relation: ListEntity) => (
+        <li key={relation.id}>{relation.name}</li>
+      ))}
+    </ul>
   );
-}
+};
 
 export default App;
